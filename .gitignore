@@ -1,0 +1,6 @@
+
+out/
+client/README_NEW.md
+client/ldn_mitm/build/
+client/ldnmitm_config/build/
+client/overlay/build/
