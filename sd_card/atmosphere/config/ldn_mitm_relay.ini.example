@@ -1,0 +1,5 @@
+﻿# Copy to: atmosphere/config/ldn_mitm_relay.ini
+
+[relay]
+server=193.70.35.100:11451
+ip=10.13.1.1
