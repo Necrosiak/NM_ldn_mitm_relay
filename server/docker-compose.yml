@@ -9,26 +9,6 @@
     networks:
       - lanrelay
 
-  psp-adhocctl:
-    image: ghcr.io/souler/ppsspp-adhoc
-    container_name: psp-adhocctl
-    restart: unless-stopped
-    ports:
-      - "27312:27312/tcp"
-    networks:
-      - lanrelay
-
-  psp-postoffice:
-    build:
-      context: ./aemu_postoffice
-    container_name: psp-postoffice
-    restart: unless-stopped
-    ports:
-      - "27313:27313/udp"
-      - "27313:27313/tcp"
-    networks:
-      - lanrelay
-
 networks:
   lanrelay:
     driver: bridge
