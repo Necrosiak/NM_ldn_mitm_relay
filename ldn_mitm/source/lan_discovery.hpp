@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+#include "relay_client.hpp"
 #include <stratosphere.hpp>
 #include "debug.hpp"
 #include <memory>
@@ -115,6 +116,8 @@ namespace ams::mitm::ldn {
     };
 
     class LANDiscovery {
+        protected:
+            RelayClient relayClient;
         public:
             static const int DefaultPort = 11452;
             static const char *FakeSsid;
@@ -203,3 +206,4 @@ namespace ams::mitm::ldn {
             bool isNodeStateChanged();
     };
 }
+

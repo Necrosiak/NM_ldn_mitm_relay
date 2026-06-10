@@ -1,4 +1,4 @@
-#include "lan_discovery.hpp"
+﻿#include "lan_discovery.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <net/if.h>
@@ -362,6 +362,11 @@ namespace ams::mitm::ldn {
         this->udp->scanResults.clear();
 
         int len = this->udp->sendBroadcast(LANPacketType::Scan);
+        // Envoyer scan via relay aussi
+        if (this->relayClient.isConnected()) {
+            u8 emptyBuf[1] = {0};
+            this->relayClient.sendLanPacket(emptyBuf, 0);
+        }
         if (len < 0) {
             return MAKERESULT(ModuleID, 20);
         }
@@ -718,6 +723,7 @@ namespace ams::mitm::ldn {
             this->tcp.reset();
             this->resetStations();
             this->initialized = false;
+            this->relayClient.disconnect();
 
             rc = nifmRequestCancel(&request);
             if (R_FAILED(rc))
@@ -775,6 +781,13 @@ namespace ams::mitm::ldn {
             return rc;
         }
 
+        // Connexion relay NM avant local network mode
+        if (this->relayClient.connectRelay()) {
+            LogFormat("RelayClient connected");
+        } else {
+            LogFormat("RelayClient failed, LAN local only");
+        }
+
         rc = nifmSetLocalNetworkMode(&request, true);
         if (R_FAILED(rc)) {
             LogFormat("nifmSetLocalNetworkMode failed %x", rc);
@@ -808,9 +821,13 @@ namespace ams::mitm::ldn {
         }
 
         os::StartThread(&this->workerThread);
+
         this->setState(CommState::Initialized);
 
         this->initialized = true;
         return 0;
     }
 }
+
+
+
